@@ -1,0 +1,40 @@
+@model List<Tenant>
+@using CommonLibrary.Model
+@using CommonLibrary.Resource
+
+<h2>@Resources.Tenants_Title</h2>
+
+<div class="container">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>@Resources.Tenants_Tenant</th>
+                <th>@Resources.Tenants_Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Tenant tenant in Model)
+            {
+                if (tenant.IsCurrentTenant)
+                {
+                    <tr class="success">
+                        <td>
+                            @tenant.TenantId;
+                        </td>
+                        <td>@tenant.TenantId</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(tenant.DisplayName, "index", "AzureResources", new { tenantId = tenant.TenantId });
+                        </td>
+                        <td>@tenant.TenantId</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+

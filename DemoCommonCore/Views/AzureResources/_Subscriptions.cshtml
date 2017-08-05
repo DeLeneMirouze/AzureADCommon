@@ -1,0 +1,26 @@
+@model List<Subscription>
+@using CommonLibrary.Model
+@using CommonLibrary.Resource
+
+<h2>@Resources.Subscriptions_Title</h2>
+
+<div class="container">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>@Resources.Subscriptions_Subscription</th>
+                <th>@Resources.Subscriptions_Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Subscription tenant in Model)
+            {
+                <tr>
+                    <td>@tenant.DisplayName</td>
+                    <td>@tenant.SubscriptionId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
