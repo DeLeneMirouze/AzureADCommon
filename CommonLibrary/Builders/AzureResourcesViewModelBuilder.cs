@@ -43,26 +43,26 @@ namespace CommonLibrary.Builders
             string json = await _azureRepositories.GetArmRequest("tenants", armToken);
             vm.Tenants = Tenant.DeserializeTenantList(json);
 
-            foreach (Tenant tenant in vm.Tenants)
-            {
-                Uri uri = new Uri("https://localhost:44361/signin-oidc");
-                string graphToken = await _tokenHelper.GetAuthorizationToken(tenant.TenantId, Constantes.Endpoints.GraphEndpoint, uri, principal, armToken);
-                json = await _azureRepositories.GetGraphRequest($"{tenant.TenantId}/tenantDetails", graphToken);
+            //foreach (Tenant tenant in vm.Tenants)
+            //{
+            //    Uri uri = new Uri("https://localhost:44361/signin-oidc");
+            //    string graphToken = await _tokenHelper.GetAuthorizationToken(tenant.TenantId, Constantes.Endpoints.GraphEndpoint, uri, principal, armToken);
+            //    json = await _azureRepositories.GetGraphRequest($"{tenant.TenantId}/tenantDetails", graphToken);
 
-                Tenant.DeserializeTenantInfo(json, tenant);
-            }
+            //    Tenant.DeserializeTenantInfo(json, tenant);
+            //}
 
-            if (tenantId != null)
-            {
-                currentTenantId = tenantId;
+            //if (tenantId != null)
+            //{
+            //    currentTenantId = tenantId;
 
-                //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.ArmEndpoint);
-                //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, $"https://graph.windows.net/{currentTenantId}/tenantDetails");
-                armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.GraphEndpoint);
-                json = await _azureRepositories.GetGraphRequest($"{currentTenantId}/tenantDetails", armToken);
-                //http://www.cloudidentity.com/blog/2013/10/14/adal-windows-azure-ad-and-multi-resource-refresh-tokens/
-                //https://graph.windows.net/{currentTenantId}/tenantDetails
-            }
+            //    //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.ArmEndpoint);
+            //    //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, $"https://graph.windows.net/{currentTenantId}/tenantDetails");
+            //    armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.GraphEndpoint);
+            //    json = await _azureRepositories.GetGraphRequest($"{currentTenantId}/tenantDetails", armToken);
+            //    //http://www.cloudidentity.com/blog/2013/10/14/adal-windows-azure-ad-and-multi-resource-refresh-tokens/
+            //    //https://graph.windows.net/{currentTenantId}/tenantDetails
+            //}
 
             // subscriptions
             json = await _azureRepositories.GetArmRequest("subscriptions", armToken);

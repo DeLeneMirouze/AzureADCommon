@@ -41,10 +41,6 @@ namespace DemoCommonCore.Controllers
             {
                 return RedirectToAction("SignOut", "Account");
             }
-            catch(Exception ex)
-            {
-                throw;
-            }
         } 
         #endregion
     }

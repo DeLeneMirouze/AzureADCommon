@@ -19,7 +19,15 @@
                 {
                     <tr class="success">
                         <td>
-                            @tenant.DisplayName
+                            @if (tenant.DisplayName == null)
+                            {
+                                @tenant.TenantId;
+                            }
+                            else
+                            {
+                                @tenant.DisplayName;
+                            }
+
                         </td>
                         <td>@tenant.TenantId</td>
                     </tr>
@@ -28,7 +36,7 @@
                 {
                     <tr>
                         <td>
-                            @Html.ActionLink(tenant.DisplayName, "index", "AzureResources", new { tenantId = tenant.TenantId })
+                            @Html.ActionLink(tenant.DisplayName == null ?tenant.TenantId:tenant.DisplayName , "index", "AzureResources", new { tenantId = tenant.TenantId })
                         </td>
                         <td>@tenant.TenantId</td>
                     </tr>

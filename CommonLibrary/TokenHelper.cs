@@ -90,30 +90,85 @@ namespace CommonLibrary
             string userObjectID = GetClaimValue(principal, Constantes.ClaimsType.ObjectIdentifier);
 
             UserAssertion assertion = new UserAssertion(armToken);
-            ClientAssertion clientAssertion = new ClientAssertion(_clientId,armToken);
+            ClientAssertion clientAssertion = new ClientAssertion(_clientId, armToken);
             ClientCredential credential = new ClientCredential(_clientId, _clientSecret);
             UserIdentifier identifier = new UserIdentifier(userObjectID, UserIdentifierType.UniqueId);
 
-
-
-
-    AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters);
-
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, clientAssertion, assertion);
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, clientAssertion);
-
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, credential, assertion); // on behalf on
-
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, credential);
-            //AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
-
-            if (result == null)
+            AuthenticationResult result1 = null;
+            string tk1 = null;
+            try
             {
-                throw new InvalidOperationException(Resources.Jwt_Error);
+                result1 = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
+                tk1 = result1.AccessToken;
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result2 = null;
+            try
+            {
+                result2 = await context.AcquireTokenAsync(resource, _clientId, uri, parameters);
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result3 = null;
+            try
+            {
+                result3 = await context.AcquireTokenAsync(resource, clientAssertion, assertion);
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result4 = null;
+            try
+            {
+                result4 = await context.AcquireTokenAsync(resource, clientAssertion);
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result5 = null;
+            try
+            {
+                 result5 = await context.AcquireTokenAsync(resource, credential, assertion); // on behalf on
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result6 = null;
+            try
+            {
+                result6 = await context.AcquireTokenAsync(resource, credential);
+            }
+            catch
+            {
+
+            }
+            AuthenticationResult result7=null;
+            try
+            {
+                result7 = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
+            }
+            catch
+            {
+
             }
 
-            return result.AccessToken;
+
+
+
+            //if (result == null)
+            //{
+            //    throw new InvalidOperationException(Resources.Jwt_Error);
+            //}
+
+            return result6.AccessToken;
         }
         #endregion
     }
