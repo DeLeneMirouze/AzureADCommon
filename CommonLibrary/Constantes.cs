@@ -11,11 +11,13 @@
             /// Azure Management Service
             /// </summary>
             public const string ArmEndpoint = "https://management.azure.com/";
+            public const string GraphEndpoint = "https://graph.windows.net/";
         }
 
         public static class ServiceVersion
         {
-            public const string Arm = "2016-09-01";
+            public const string ArmVersion = "2016-09-01";
+            public const string GraphVersion = "1.6";
         }
 
         public static class ClaimsType

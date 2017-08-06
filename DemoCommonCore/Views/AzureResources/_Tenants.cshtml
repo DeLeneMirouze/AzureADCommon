@@ -19,7 +19,7 @@
                 {
                     <tr class="success">
                         <td>
-                            @tenant.TenantId;
+                            @tenant.DisplayName
                         </td>
                         <td>@tenant.TenantId</td>
                     </tr>
@@ -28,7 +28,7 @@
                 {
                     <tr>
                         <td>
-                            @Html.ActionLink(tenant.DisplayName, "index", "AzureResources", new { tenantId = tenant.TenantId });
+                            @Html.ActionLink(tenant.DisplayName, "index", "AzureResources", new { tenantId = tenant.TenantId })
                         </td>
                         <td>@tenant.TenantId</td>
                     </tr>

@@ -9,5 +9,6 @@ namespace CommonLibrary
         string GetClaimValue(ClaimsPrincipal principal, string claimType);
         Task<string> GetCurrentAuthorizationToken(string tenantId);
         Task<string> GetAuthorizationToken(string tenantId, string resource);
+        Task<string> GetAuthorizationToken(string tenantId, string resource, Uri uri, ClaimsPrincipal principal, string armToken);
     }
 }

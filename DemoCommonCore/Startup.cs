@@ -57,7 +57,7 @@ namespace DemoCommonCore
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient(typeof(ITokenHelper), typeof(TokenHelper));
-            services.AddTransient(typeof(IArmRepositories), typeof(ArmRepositories));
+            services.AddTransient(typeof(IAzureRepositories), typeof(AzureRepositories));
         }
         #endregion
 

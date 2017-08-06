@@ -81,6 +81,40 @@ namespace CommonLibrary
 
             return result.AccessToken;
         }
+
+        public async Task<string> GetAuthorizationToken(string tenantId, string resource, Uri uri, ClaimsPrincipal principal, string armToken)
+        {
+            AuthenticationContext context = new AuthenticationContext($"{_baseAuthority}{tenantId}");
+            IPlatformParameters parameters = new PlatformParameters(PromptBehavior.Auto);
+
+            string userObjectID = GetClaimValue(principal, Constantes.ClaimsType.ObjectIdentifier);
+
+            UserAssertion assertion = new UserAssertion(armToken);
+            ClientAssertion clientAssertion = new ClientAssertion(_clientId,armToken);
+            ClientCredential credential = new ClientCredential(_clientId, _clientSecret);
+            UserIdentifier identifier = new UserIdentifier(userObjectID, UserIdentifierType.UniqueId);
+
+
+
+
+    AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters);
+
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, clientAssertion, assertion);
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, clientAssertion);
+
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, credential, assertion); // on behalf on
+
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, credential);
+            //AuthenticationResult result = await context.AcquireTokenAsync(resource, _clientId, uri, parameters, identifier);
+
+            if (result == null)
+            {
+                throw new InvalidOperationException(Resources.Jwt_Error);
+            }
+
+            return result.AccessToken;
+        }
         #endregion
     }
 }

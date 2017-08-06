@@ -10,7 +10,7 @@ namespace CommonLibrary.Repositories
     /// <summary>
     /// Tools to request Azure
     /// </summary>
-    public class ArmRepositories : IArmRepositories
+    public class AzureRepositories : IAzureRepositories
     {
         #region GetArmRequest
         /// <summary>
@@ -23,7 +23,7 @@ namespace CommonLibrary.Repositories
         {
             using (HttpClient client = GetClient(Constantes.Endpoints.ArmEndpoint, armToken))
             {
-                HttpResponseMessage message = await client.GetAsync(urlPath + $"?api-version={Constantes.ServiceVersion.Arm}");
+                HttpResponseMessage message = await client.GetAsync(urlPath + $"?api-version={Constantes.ServiceVersion.ArmVersion}");
                 if (message.IsSuccessStatusCode)
                 {
                     string json = await message.Content.ReadAsStringAsync();
@@ -31,6 +31,29 @@ namespace CommonLibrary.Repositories
                 }
 
                 throw new InvalidOperationException(message.ReasonPhrase);
+            }
+        }
+        #endregion
+
+        #region GetGraphRequest
+        /// <summary>
+        /// Run an HTTP request to Graph Azure AD
+        /// </summary>
+        /// <param name="urlPath">Url's path to process. Should end with '/'</param>
+        /// <param name="graphToken">Graph token</param>
+        /// <returns>A JSON response or InvalidOperationException</returns>
+        public async Task<string> GetGraphRequest(string urlPath, string graphToken)
+        {
+            using (HttpClient client = GetClient(Constantes.Endpoints.GraphEndpoint, graphToken))
+            {
+                HttpResponseMessage message = await client.GetAsync(urlPath + $"?api-version={Constantes.ServiceVersion.GraphVersion}");
+                if (message.IsSuccessStatusCode)
+                {
+                    string json = await message.Content.ReadAsStringAsync();
+                    return json;
+                }
+
+                throw new InvalidOperationException($"{message.ReasonPhrase} ({(int)message.StatusCode})");
             }
         }
         #endregion

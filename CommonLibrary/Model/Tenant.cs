@@ -9,13 +9,25 @@ namespace CommonLibrary.Model
     [DebuggerDisplay("{DisplayName}")]
     public sealed class Tenant
     {
+        /// <summary>
+        /// Tenant's id
+        /// </summary>
         public string TenantId { get; set; }
+        /// <summary>
+        /// Tenant's name
+        /// </summary>
         public string DisplayName { get; set; }
-        public string DomainName { get; set; }
+        /// <summary>
+        /// Domains in the tenant
+        /// </summary>
+        public string[] DomainNames { get; set; }
+        /// <summary>
+        /// This is the current tenant
+        /// </summary>
         public bool IsCurrentTenant { get; set; }
 
-        #region Deserialize (static)
-        public static List<Tenant> Deserialize(string json)
+        #region DeserializeTenantList (static)
+        public static List<Tenant> DeserializeTenantList(string json)
         {
             JArray tenantsJson = (JArray)(JObject.Parse(json))["value"];
 
@@ -25,14 +37,30 @@ namespace CommonLibrary.Model
             {
                 Tenant tenant = new Tenant();
 
-                tenant.DisplayName = tenantString["tenantId"].Value<string>();
-                tenant.DomainName = tenantString["tenantId"].Value<string>();
                 tenant.TenantId = tenantString["tenantId"].Value<string>();
 
                 tenants.Add(tenant);
             }
 
             return tenants;
+        }
+        #endregion
+
+        #region DeserializeTenantInfo (static)
+        public static void DeserializeTenantInfo(string json, Tenant tenant)
+        {
+            JArray tenantsJson = (JArray)(JObject.Parse(json))["value"];
+            tenant.DisplayName = tenantsJson.First["displayName"].Value<string>();
+
+            JToken vds = tenantsJson.First["verifiedDomains"];
+            JArray verifiedDomains = (JArray)vds;
+
+            tenant.DomainNames = new string[verifiedDomains.Count];
+            for (int i = 0; i < verifiedDomains.Count; i++)
+            {
+                JToken verifiedDomain = verifiedDomains[i];
+                tenant.DomainNames[i] = verifiedDomain["name"].Value<string>();
+            }
         }
         #endregion
     }

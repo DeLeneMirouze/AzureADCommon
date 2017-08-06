@@ -18,9 +18,9 @@ namespace DemoCommonCore.Controllers
     {
         #region Constructor
         readonly AzureResourcesViewModelBuilder _azureResourcesViewModelBuilder;
-        readonly IArmRepositories _armRepositories;
+        readonly IAzureRepositories _armRepositories;
 
-        public AzureResourcesController(ITokenHelper tokenHelper, IArmRepositories armRepositories, IConfiguration configuration):base(configuration)
+        public AzureResourcesController(ITokenHelper tokenHelper, IAzureRepositories armRepositories, IConfiguration configuration):base(configuration)
         {
             _armRepositories = armRepositories;
             _azureResourcesViewModelBuilder = new AzureResourcesViewModelBuilder(tokenHelper, armRepositories);
@@ -40,6 +40,10 @@ namespace DemoCommonCore.Controllers
             catch (AdalSilentTokenAcquisitionException)
             {
                 return RedirectToAction("SignOut", "Account");
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         } 
         #endregion

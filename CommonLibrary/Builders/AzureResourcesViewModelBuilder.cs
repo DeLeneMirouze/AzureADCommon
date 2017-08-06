@@ -2,6 +2,7 @@
 using CommonLibrary.Model;
 using CommonLibrary.Repositories;
 using CommonLibrary.ViewModels;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks; 
@@ -16,12 +17,12 @@ namespace CommonLibrary.Builders
     {
         #region Constructeur
         readonly ITokenHelper _tokenHelper;
-        readonly IArmRepositories _armRepositories;
+        readonly IAzureRepositories _azureRepositories;
 
-        public AzureResourcesViewModelBuilder(ITokenHelper tokenHelper, IArmRepositories armRepositories)
+        public AzureResourcesViewModelBuilder(ITokenHelper tokenHelper, IAzureRepositories azureRepositories)
         {
             _tokenHelper = tokenHelper;
-            _armRepositories = armRepositories;
+            _azureRepositories = azureRepositories;
         }
         #endregion
 
@@ -39,19 +40,32 @@ namespace CommonLibrary.Builders
             string armToken = await _tokenHelper.GetCurrentAuthorizationToken(currentTenantId);
 
             // all tenants
-            string json = await _armRepositories.GetArmRequest("tenants", armToken);
-            vm.Tenants = Tenant.Deserialize(json);
+            string json = await _azureRepositories.GetArmRequest("tenants", armToken);
+            vm.Tenants = Tenant.DeserializeTenantList(json);
+
+            foreach (Tenant tenant in vm.Tenants)
+            {
+                Uri uri = new Uri("https://localhost:44361/signin-oidc");
+                string graphToken = await _tokenHelper.GetAuthorizationToken(tenant.TenantId, Constantes.Endpoints.GraphEndpoint, uri, principal, armToken);
+                json = await _azureRepositories.GetGraphRequest($"{tenant.TenantId}/tenantDetails", graphToken);
+
+                Tenant.DeserializeTenantInfo(json, tenant);
+            }
 
             if (tenantId != null)
             {
                 currentTenantId = tenantId;
 
-                armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.ArmEndpoint);
+                //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.ArmEndpoint);
+                //armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, $"https://graph.windows.net/{currentTenantId}/tenantDetails");
+                armToken = await _tokenHelper.GetAuthorizationToken(currentTenantId, Constantes.Endpoints.GraphEndpoint);
+                json = await _azureRepositories.GetGraphRequest($"{currentTenantId}/tenantDetails", armToken);
                 //http://www.cloudidentity.com/blog/2013/10/14/adal-windows-azure-ad-and-multi-resource-refresh-tokens/
+                //https://graph.windows.net/{currentTenantId}/tenantDetails
             }
 
             // subscriptions
-            json = await _armRepositories.GetArmRequest("subscriptions", armToken);
+            json = await _azureRepositories.GetArmRequest("subscriptions", armToken);
             vm.Subscriptions = Subscription.Deserialize(json);
 
             vm.Tenants.ForEach(t =>
